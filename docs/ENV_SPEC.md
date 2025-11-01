@@ -3,6 +3,7 @@
 Complete specification of the TeamsClone-RL environment for reinforcement learning.
 
 ## Table of Contents
+
 - [Observation Space](#observation-space)
 - [Action Space](#action-space)
 - [Reward Function](#reward-function)
@@ -67,17 +68,21 @@ The environment provides a rich observation containing information about the cur
 ### Key Observation Components
 
 #### 1. Agent State
+
 - **currentTeamId**: Current team the agent is in
 - **currentChannelId**: Current active channel
 - **userId**: Agent's user ID
 
 #### 2. Current Channel
+
 - **id**: Channel identifier
 - **name**: Human-readable channel name
 - **unread**: Number of unread messages
 
 #### 3. Recent Messages
+
 Array of recent messages (last 10) in the current channel:
+
 - **id**: Unique message identifier
 - **userId**: Sender's user ID
 - **content**: Message text
@@ -85,12 +90,15 @@ Array of recent messages (last 10) in the current channel:
 - **reactions**: Array of emoji reactions
 
 #### 4. Teams & Channels
+
 Complete team hierarchy with all available channels and unread counts.
 
 #### 5. Users
+
 List of all users with their presence status and metadata.
 
 #### 6. Episode Statistics
+
 - **stepCount**: Number of steps taken in episode
 - **totalReward**: Cumulative reward
 - **messagesSent**: Total messages sent by agent
@@ -103,6 +111,7 @@ Actions are dictionaries with `type` and `payload` fields.
 ### Action Types
 
 #### 1. Send Message
+
 Send a text message to a channel.
 
 ```python
@@ -116,6 +125,7 @@ Send a text message to a channel.
 ```
 
 **Constraints:**
+
 - Content must be non-empty string
 - Max length: 1000 characters (not enforced yet)
 - ChannelId must be valid
@@ -123,6 +133,7 @@ Send a text message to a channel.
 **Typical Reward:** +0.1 to +0.6 depending on context
 
 #### 2. Switch Channel
+
 Navigate to a different channel.
 
 ```python
@@ -135,12 +146,14 @@ Navigate to a different channel.
 ```
 
 **Constraints:**
+
 - ChannelId must exist
 - Can switch to any channel in any team
 
 **Typical Reward:** +0.05 (exploration bonus)
 
 #### 3. React to Message
+
 Add an emoji reaction to a message.
 
 ```python
@@ -156,6 +169,7 @@ Add an emoji reaction to a message.
 **Typical Reward:** +0.05 (engagement)
 
 #### 4. Join Call
+
 Join a voice/video call (simulated).
 
 ```python
@@ -172,6 +186,7 @@ Join a voice/video call (simulated).
 ### Invalid Actions
 
 Invalid actions receive negative rewards:
+
 - Empty message: -0.2
 - Invalid channel: -0.3
 - Malformed action: -0.1
@@ -182,26 +197,27 @@ The reward function encourages meaningful collaboration and communication.
 
 ### Base Rewards
 
-| Action | Base Reward | Description |
-|--------|-------------|-------------|
-| Send message | +0.1 | Basic communication reward |
-| Respond to mention | +0.5 | High priority: responding when tagged |
-| Switch channel | +0.05 | Exploration bonus |
-| React to message | +0.05 | Engagement reward |
-| Join call | +0.3 | Participation in meetings |
+| Action             | Base Reward | Description                           |
+| ------------------ | ----------- | ------------------------------------- |
+| Send message       | +0.1        | Basic communication reward            |
+| Respond to mention | +0.5        | High priority: responding when tagged |
+| Switch channel     | +0.05       | Exploration bonus                     |
+| React to message   | +0.05       | Engagement reward                     |
+| Join call          | +0.3        | Participation in meetings             |
 
 ### Penalties
 
-| Action | Penalty | Description |
-|--------|---------|-------------|
-| Empty message | -0.2 | Invalid/spam message |
-| Invalid channel | -0.3 | Non-existent channel |
-| Invalid action | -0.1 | Malformed request |
-| Spam behavior | -0.5 | Excessive actions (future) |
+| Action          | Penalty | Description                |
+| --------------- | ------- | -------------------------- |
+| Empty message   | -0.2    | Invalid/spam message       |
+| Invalid channel | -0.3    | Non-existent channel       |
+| Invalid action  | -0.1    | Malformed request          |
+| Spam behavior   | -0.5    | Excessive actions (future) |
 
 ### Contextual Bonuses
 
 Additional rewards based on context:
+
 - **Timely response**: +0.2 if responding within X steps of mention
 - **Channel engagement**: +0.1 for first message in low-activity channel
 - **Presence**: +0.05 per step for maintaining active status
@@ -221,10 +237,12 @@ Episodes end when any of the following conditions are met:
 ### Termination Conditions
 
 1. **Max steps reached** - Default: 100 steps
+
    - Configurable per experiment
    - Ensures bounded episode length
 
 2. **Task completion** (future) - Specific goal achieved
+
    - Example: Respond to all mentions
    - Example: Attend scheduled meeting
 
@@ -233,6 +251,7 @@ Episodes end when any of the following conditions are met:
 ### Episode Statistics
 
 At termination, the following statistics are available:
+
 - Total steps taken
 - Cumulative reward
 - Messages sent
@@ -250,33 +269,34 @@ Agents need to encode the raw state dictionary into fixed-size vectors for neura
 ```python
 def encode_state(state):
     features = []
-    
+
     # 1. Channel encoding (one-hot or embedding)
     channel_id = state['agentState']['currentChannelId']
     # ... encode channel
-    
+
     # 2. Message history (embeddings or BoW)
     messages = state['recentMessages']
     # ... encode recent messages
-    
+
     # 3. Unread counts (normalized)
-    unread_vector = [ch['unread'] / 10.0 for team in state['teams'] 
+    unread_vector = [ch['unread'] / 10.0 for team in state['teams']
                      for ch in team['channels']]
-    
+
     # 4. Presence information
-    available_users = sum(1 for u in state['users'] 
+    available_users = sum(1 for u in state['users']
                          if u['status'] == 'available')
-    
+
     # 5. Episode progress
     progress = state['episodeStats']['stepCount'] / 100.0
-    
-    return np.concatenate([channel_enc, message_enc, 
+
+    return np.concatenate([channel_enc, message_enc,
                           unread_vector, [available_users, progress]])
 ```
 
 ### Dimensionality
 
 Recommended state vector size: **128 to 512 dimensions**
+
 - Channel info: 32-64 dims
 - Message embeddings: 64-256 dims (BERT/GPT embeddings)
 - Metadata: 16-32 dims
@@ -298,18 +318,18 @@ done = False
 while not done:
     # Agent selects action
     action = agent.select_action(state)
-    
+
     # Execute action
     result = env.step(action)
-    
+
     next_state = result['state']
     reward = result['reward']
     done = result['done']
     info = result['info']
-    
+
     # Learn from experience
     agent.update(state, action, reward, next_state, done)
-    
+
     state = next_state
 ```
 
@@ -333,16 +353,19 @@ policy.update(trajectories)
 Future variants for different research tasks:
 
 ### 1. Single-Task Variant
+
 - **Objective**: Respond to all @mentions within episode
 - **Reward**: +1.0 per mention responded to
 - **Termination**: All mentions addressed
 
 ### 2. Multi-Task Variant
+
 - **Objective**: Balance multiple goals (mentions, meetings, exploration)
 - **Reward**: Weighted combination of sub-rewards
 - **Termination**: Fixed horizon (100 steps)
 
 ### 3. Multi-Agent Variant
+
 - **Objective**: Multiple RL agents collaborating
 - **Reward**: Shared or individual rewards
 - **Termination**: Cooperative task completion
@@ -351,11 +374,11 @@ Future variants for different research tasks:
 
 Baseline performance metrics:
 
-| Agent Type | Avg Reward | Messages/Episode | Response Rate |
-|------------|-----------|------------------|---------------|
-| Random | -2.5 ± 1.0 | 8 ± 3 | 10% |
-| Rule-based | 3.2 ± 0.8 | 12 ± 2 | 75% |
-| DQN (target) | 5.0+ | 15+ | 90%+ |
+| Agent Type   | Avg Reward | Messages/Episode | Response Rate |
+| ------------ | ---------- | ---------------- | ------------- |
+| Random       | -2.5 ± 1.0 | 8 ± 3            | 10%           |
+| Rule-based   | 3.2 ± 0.8  | 12 ± 2           | 75%           |
+| DQN (target) | 5.0+       | 15+              | 90%+          |
 
 ## Notes for Researchers
 

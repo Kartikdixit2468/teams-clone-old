@@ -7,6 +7,7 @@ TeamsClone-RL is a realistic web clone of Microsoft Teams designed to serve as a
 ## 🎯 Overview
 
 This project provides:
+
 - ✅ **Realistic Teams UI/UX** - Fully functional web interface with real-time chat
 - ✅ **RL Environment API** - Gym-like interface for agent interaction
 - ✅ **Multi-user Support** - Real-time collaboration via Socket.IO
@@ -42,7 +43,8 @@ This project provides:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16+ 
+
+- Node.js 16+
 - Python 3.8+
 - npm or yarn
 
@@ -89,13 +91,13 @@ python agents/rule_based_agent.py
 
 ### Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/env/reset` | POST | Reset environment to initial state |
-| `/env/state` | GET | Get current observation |
-| `/env/step` | POST | Execute action, return reward |
-| `/env/actions` | GET | List available actions |
-| `/env/stats` | GET | Get episode statistics |
+| Endpoint       | Method | Description                        |
+| -------------- | ------ | ---------------------------------- |
+| `/env/reset`   | POST   | Reset environment to initial state |
+| `/env/state`   | GET    | Get current observation            |
+| `/env/step`    | POST   | Execute action, return reward      |
+| `/env/actions` | GET    | List available actions             |
+| `/env/stats`   | GET    | Get episode statistics             |
 
 ### Example Usage
 

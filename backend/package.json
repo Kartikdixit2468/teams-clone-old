@@ -9,7 +9,12 @@
     "dev": "node --watch src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["reinforcement-learning", "teams-clone", "socket.io", "rl-environment"],
+  "keywords": [
+    "reinforcement-learning",
+    "teams-clone",
+    "socket.io",
+    "rl-environment"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {

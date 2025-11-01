@@ -1,34 +1,34 @@
 {
-  "name": "teamsclone-rl",
-  "version": "1.0.0",
-  "description": "A High-Fidelity Microsoft Teams Environment for Reinforcement Learning",
-  "scripts": {
-    "install:all": "npm run install:backend && npm run install:frontend && npm run install:python",
-    "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
-    "install:python": "cd python_agent && pip install -r requirements.txt",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "start:backend": "cd backend && npm start",
-    "start:frontend": "cd frontend && npm run dev",
-    "build:frontend": "cd frontend && npm run build",
-    "test:agent": "cd python_agent && python agents/random_agent.py"
-  },
-  "keywords": [
-    "reinforcement-learning",
-    "teams",
-    "collaboration",
-    "rl-environment",
-    "hackathon"
-  ],
-  "author": "Your Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Muneer320/teams-clone.git"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
-  }
+    "name": "teamsclone-rl",
+    "version": "1.0.0",
+    "description": "A High-Fidelity Microsoft Teams Environment for Reinforcement Learning",
+    "scripts": {
+        "install:all": "npm run install:backend && npm run install:frontend && npm run install:python",
+        "install:backend": "cd backend && npm install",
+        "install:frontend": "cd frontend && npm install",
+        "install:python": "cd python_agent && pip install -r requirements.txt",
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm run dev",
+        "start:backend": "cd backend && npm start",
+        "start:frontend": "cd frontend && npm run dev",
+        "build:frontend": "cd frontend && npm run build",
+        "test:agent": "cd python_agent && python agents/random_agent.py"
+    },
+    "keywords": [
+        "reinforcement-learning",
+        "teams",
+        "collaboration",
+        "rl-environment",
+        "hackathon"
+    ],
+    "author": "Your Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Muneer320/teams-clone.git"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    }
 }

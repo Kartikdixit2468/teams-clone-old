@@ -9,6 +9,7 @@ http://localhost:3001
 ```
 
 ## Table of Contents
+
 - [RL Environment API](#rl-environment-api)
 - [Socket.IO Events](#socketio-events)
 - [Error Handling](#error-handling)
@@ -22,12 +23,14 @@ All environment endpoints are prefixed with `/env`.
 Reset the environment to initial state.
 
 **Request:**
+
 ```http
 POST /env/reset
 Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -45,6 +48,7 @@ Content-Type: application/json
 ```
 
 **Status Codes:**
+
 - `200 OK` - Successfully reset
 - `500 Internal Server Error` - Server error
 
@@ -55,11 +59,13 @@ Content-Type: application/json
 Get current environment state (observation).
 
 **Request:**
+
 ```http
 GET /env/state
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -100,6 +106,7 @@ GET /env/state
 ```
 
 **Status Codes:**
+
 - `200 OK` - Successfully retrieved
 - `500 Internal Server Error` - Server error
 
@@ -110,6 +117,7 @@ GET /env/state
 Execute an action and receive next state + reward.
 
 **Request:**
+
 ```http
 POST /env/step
 Content-Type: application/json
@@ -127,17 +135,19 @@ Content-Type: application/json
 **Action Types:**
 
 #### send_message
+
 ```json
 {
   "type": "send_message",
   "payload": {
     "content": "Message text",
-    "channelId": "channel-1"  // Optional
+    "channelId": "channel-1" // Optional
   }
 }
 ```
 
 #### switch_channel
+
 ```json
 {
   "type": "switch_channel",
@@ -148,6 +158,7 @@ Content-Type: application/json
 ```
 
 #### react_to_message
+
 ```json
 {
   "type": "react_to_message",
@@ -159,16 +170,18 @@ Content-Type: application/json
 ```
 
 #### join_call
+
 ```json
 {
   "type": "join_call",
   "payload": {
-    "channelId": "channel-1"  // Optional
+    "channelId": "channel-1" // Optional
   }
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -182,11 +195,13 @@ Content-Type: application/json
 ```
 
 **Status Codes:**
+
 - `200 OK` - Action executed
 - `400 Bad Request` - Invalid action format
 - `500 Internal Server Error` - Server error
 
 **Possible Rewards:**
+
 - `0.1 to 0.6` - Positive actions (messages, exploration)
 - `-0.1 to -0.5` - Invalid or penalty actions
 
@@ -197,11 +212,13 @@ Content-Type: application/json
 Get list of available actions and channels.
 
 **Request:**
+
 ```http
 GET /env/actions
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -253,6 +270,7 @@ GET /env/actions
 ```
 
 **Status Codes:**
+
 - `200 OK` - Successfully retrieved
 - `500 Internal Server Error` - Server error
 
@@ -263,11 +281,13 @@ GET /env/actions
 Get episode statistics.
 
 **Request:**
+
 ```http
 GET /env/stats
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -282,6 +302,7 @@ GET /env/stats
 ```
 
 **Status Codes:**
+
 - `200 OK` - Successfully retrieved
 - `500 Internal Server Error` - Server error
 
@@ -294,12 +315,12 @@ Real-time communication via Socket.IO.
 ### Connection
 
 ```javascript
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3001');
+const socket = io("http://localhost:3001");
 
-socket.on('connect', () => {
-  console.log('Connected to server');
+socket.on("connect", () => {
+  console.log("Connected to server");
 });
 ```
 
@@ -310,10 +331,11 @@ socket.on('connect', () => {
 Join a channel room to receive messages.
 
 ```javascript
-socket.emit('join_channel', channelId);
+socket.emit("join_channel", channelId);
 ```
 
 **Parameters:**
+
 - `channelId` (string) - Channel to join
 
 ---
@@ -323,10 +345,11 @@ socket.emit('join_channel', channelId);
 Leave a channel room.
 
 ```javascript
-socket.emit('leave_channel', channelId);
+socket.emit("leave_channel", channelId);
 ```
 
 **Parameters:**
+
 - `channelId` (string) - Channel to leave
 
 ---
@@ -336,14 +359,15 @@ socket.emit('leave_channel', channelId);
 Send a message via Socket.IO.
 
 ```javascript
-socket.emit('send_message', {
-  channelId: 'channel-1',
-  userId: 'user-1',
-  content: 'Hello!'
+socket.emit("send_message", {
+  channelId: "channel-1",
+  userId: "user-1",
+  content: "Hello!",
 });
 ```
 
 **Parameters:**
+
 - `channelId` (string) - Target channel
 - `userId` (string) - Sender ID
 - `content` (string) - Message text
@@ -355,10 +379,10 @@ socket.emit('send_message', {
 Indicate user is typing.
 
 ```javascript
-socket.emit('typing', {
-  channelId: 'channel-1',
-  userId: 'user-1',
-  userName: 'Alice'
+socket.emit("typing", {
+  channelId: "channel-1",
+  userId: "user-1",
+  userName: "Alice",
 });
 ```
 
@@ -369,9 +393,9 @@ socket.emit('typing', {
 Update user presence status.
 
 ```javascript
-socket.emit('update_presence', {
-  userId: 'user-1',
-  status: 'busy'  // available, busy, away, offline
+socket.emit("update_presence", {
+  userId: "user-1",
+  status: "busy", // available, busy, away, offline
 });
 ```
 
@@ -382,11 +406,11 @@ socket.emit('update_presence', {
 Add reaction to a message.
 
 ```javascript
-socket.emit('add_reaction', {
-  messageId: 'msg-uuid',
-  channelId: 'channel-1',
-  reaction: '👍',
-  userId: 'user-1'
+socket.emit("add_reaction", {
+  messageId: "msg-uuid",
+  channelId: "channel-1",
+  reaction: "👍",
+  userId: "user-1",
 });
 ```
 
@@ -399,8 +423,8 @@ socket.emit('add_reaction', {
 Receive a new message in a channel.
 
 ```javascript
-socket.on('new_message', (message) => {
-  console.log('New message:', message);
+socket.on("new_message", (message) => {
+  console.log("New message:", message);
   // message = {
   //   id, channelId, userId, content, timestamp, reactions
   // }
@@ -414,7 +438,7 @@ socket.on('new_message', (message) => {
 Someone is typing in the channel.
 
 ```javascript
-socket.on('user_typing', ({ userId, userName }) => {
+socket.on("user_typing", ({ userId, userName }) => {
   console.log(`${userName} is typing...`);
 });
 ```
@@ -426,7 +450,7 @@ socket.on('user_typing', ({ userId, userName }) => {
 User status changed.
 
 ```javascript
-socket.on('presence_update', ({ userId, status }) => {
+socket.on("presence_update", ({ userId, status }) => {
   console.log(`${userId} is now ${status}`);
 });
 ```
@@ -438,7 +462,7 @@ socket.on('presence_update', ({ userId, status }) => {
 Reaction added to a message.
 
 ```javascript
-socket.on('reaction_added', ({ messageId, reaction, userId }) => {
+socket.on("reaction_added", ({ messageId, reaction, userId }) => {
   console.log(`${userId} reacted with ${reaction}`);
 });
 ```
@@ -450,7 +474,7 @@ socket.on('reaction_added', ({ messageId, reaction, userId }) => {
 Unread count updated.
 
 ```javascript
-socket.on('unread_update', ({ channelId, count }) => {
+socket.on("unread_update", ({ channelId, count }) => {
   console.log(`Channel ${channelId} has ${count} unread`);
 });
 ```
@@ -512,12 +536,14 @@ socket.on('unread_update', ({ channelId, count }) => {
 ## Rate Limiting
 
 Currently **not implemented**. Future versions may include:
+
 - Max 100 requests/minute per IP
 - Max 10 messages/second per user
 
 ## Authentication
 
 Currently **not required**. Future versions may include:
+
 - JWT tokens
 - API keys
 - Session management
@@ -525,6 +551,7 @@ Currently **not required**. Future versions may include:
 ## CORS
 
 Configured to allow:
+
 - Origin: `http://localhost:5173` (frontend)
 - Methods: `GET, POST`
 - Credentials: Allowed
@@ -536,11 +563,13 @@ Configured to allow:
 Check server health.
 
 **Request:**
+
 ```http
 GET /health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "healthy",

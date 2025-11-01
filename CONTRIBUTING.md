@@ -12,17 +12,20 @@ Thank you for contributing to TeamsClone-RL! This is a hackathon project, so we'
 ## Getting Started
 
 1. **Clone the repo**
+
 ```bash
 git clone https://github.com/Muneer320/teams-clone.git
 cd teams-clone
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm run install:all
 ```
 
 3. **Create a branch**
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
@@ -30,12 +33,14 @@ git checkout -b feature/your-feature-name
 4. **Make changes and test**
 
 5. **Commit with clear messages**
+
 ```bash
 git add .
 git commit -m "feat: add message reactions feature"
 ```
 
 6. **Push and create PR**
+
 ```bash
 git push origin feature/your-feature-name
 ```
@@ -43,12 +48,14 @@ git push origin feature/your-feature-name
 ## Code Style
 
 ### JavaScript/React
+
 - Use ES6+ features
 - Functional components with hooks
 - Descriptive variable names
 - Add comments for complex logic
 
 ### Python
+
 - Follow PEP 8
 - Type hints where possible
 - Docstrings for functions
@@ -57,6 +64,7 @@ git push origin feature/your-feature-name
 ## Commit Messages
 
 Follow conventional commits:
+
 - `feat:` New feature
 - `fix:` Bug fix
 - `docs:` Documentation changes
@@ -74,6 +82,7 @@ Follow conventional commits:
 ## Testing
 
 Before pushing:
+
 - Backend: Test API endpoints work
 - Frontend: Check UI renders correctly
 - Python: Run agents to verify they work

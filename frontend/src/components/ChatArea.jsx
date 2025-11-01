@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { Send, Smile, Paperclip, MoreVertical } from 'lucide-react';
-import Message from './Message';
+import { useState, useEffect, useRef } from "react";
+import { Send, Smile, Paperclip, MoreVertical } from "lucide-react";
+import Message from "./Message";
 
 function ChatArea({ channel, messages, users, currentUser, onSendMessage }) {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -18,20 +18,30 @@ function ChatArea({ channel, messages, users, currentUser, onSendMessage }) {
     e.preventDefault();
     if (inputValue.trim()) {
       onSendMessage(inputValue);
-      setInputValue('');
+      setInputValue("");
     }
   };
 
   const getUserById = (userId) => {
-    return users.find(u => u.id === userId) || { name: 'Unknown', avatar: '❓', status: 'offline' };
+    return (
+      users.find((u) => u.id === userId) || {
+        name: "Unknown",
+        avatar: "❓",
+        status: "offline",
+      }
+    );
   };
 
   if (!channel) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-600">Select a channel to start</h2>
-          <p className="text-gray-500 mt-2">Choose a channel from the left sidebar</p>
+          <h2 className="text-2xl font-semibold text-gray-600">
+            Select a channel to start
+          </h2>
+          <p className="text-gray-500 mt-2">
+            Choose a channel from the left sidebar
+          </p>
         </div>
       </div>
     );
@@ -75,7 +85,7 @@ function ChatArea({ channel, messages, users, currentUser, onSendMessage }) {
           <button type="button" className="hover:bg-gray-200 p-2 rounded">
             <Paperclip size={20} />
           </button>
-          
+
           <input
             type="text"
             value={inputValue}
@@ -83,11 +93,11 @@ function ChatArea({ channel, messages, users, currentUser, onSendMessage }) {
             placeholder={`Message #${channel.name}`}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teams-purple"
           />
-          
+
           <button type="button" className="hover:bg-gray-200 p-2 rounded">
             <Smile size={20} />
           </button>
-          
+
           <button
             type="submit"
             disabled={!inputValue.trim()}

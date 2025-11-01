@@ -1,6 +1,7 @@
 # TeamsClone-RL Backend
 
 Backend server for TeamsClone-RL project, providing:
+
 - Real-time chat via Socket.IO
 - RL Environment API for agent interaction
 - Teams/Channels management
@@ -26,6 +27,7 @@ npm run dev
 ### Socket.IO Events
 
 **Client → Server:**
+
 - `join_channel` - Join a channel room
 - `send_message` - Send a message
 - `typing` - Typing indicator
@@ -33,6 +35,7 @@ npm run dev
 - `add_reaction` - React to message
 
 **Server → Client:**
+
 - `new_message` - New message broadcast
 - `user_typing` - Typing indicator
 - `presence_update` - User status change

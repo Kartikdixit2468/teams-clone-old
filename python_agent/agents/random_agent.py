@@ -13,36 +13,36 @@ from rl_client import TeamsEnvClient, ObservationWrapper
 def random_agent(episodes: int = 5, max_steps: int = 50):
     """
     Run a random agent that takes random actions.
-    
+
     Args:
         episodes: Number of episodes to run
         max_steps: Maximum steps per episode
     """
     client = TeamsEnvClient()
-    
+
     print("🤖 Starting Random Agent")
     print("=" * 50)
-    
+
     for episode in range(episodes):
         print(f"\n📊 Episode {episode + 1}/{episodes}")
-        
+
         # Reset environment
         state = client.reset()
         obs = ObservationWrapper(state)
-        
+
         total_reward = 0
         done = False
         step = 0
-        
+
         while not done and step < max_steps:
             # Get available actions
             actions_info = client.get_actions()
             action_types = [a['type'] for a in actions_info['actions']]
             channels = [c['id'] for c in actions_info['channels']]
-            
+
             # Choose random action
             action_type = random.choice(action_types)
-            
+
             # Build action payload
             if action_type == 'send_message':
                 messages = [
@@ -81,22 +81,23 @@ def random_agent(episodes: int = 5, max_steps: int = 50):
                     continue
             else:
                 continue
-            
+
             # Execute action
             result = client.step(action)
-            
+
             reward = result.get('reward', 0)
             done = result.get('done', False)
             info = result.get('info', {})
-            
+
             total_reward += reward
             step += 1
-            
-            print(f"  Step {step}: {action['type']} | Reward: {reward:.2f} | Total: {total_reward:.2f}")
-            
+
+            print(
+                f"  Step {step}: {action['type']} | Reward: {reward:.2f} | Total: {total_reward:.2f}")
+
             # Small delay to simulate realistic interaction
             time.sleep(0.5)
-        
+
         # Get final stats
         stats = client.get_stats()
         print(f"\n✅ Episode {episode + 1} Complete!")

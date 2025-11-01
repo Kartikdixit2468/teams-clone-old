@@ -1,16 +1,16 @@
 """
-Enhanced RL Training Agent for TeamsClone-RL
+RL Training Agent for TeamsClone-RL
 
 Demonstrates how to train an agent with task-based learning and episode management.
 """
 
 import time
-from rl_client import TeamsEnvClient
+from client import TeamsEnvClient
 
 
 class TaskAgent:
     """
-    Enhanced agent that can handle different task types with task-specific policies.
+    Agent that can handle different task types with task-specific policies.
     """
 
     def __init__(self, client):

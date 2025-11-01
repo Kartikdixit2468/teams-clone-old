@@ -26,15 +26,15 @@ The server will start on `http://localhost:3001`
 
 ```bash
 cd python_agent
-python test_rl_env.py
+python test.py
 ```
 
 This runs a quick test suite to verify everything is working.
 
-### 3. Run the Intelligent Agent
+### 3. Run the Agent
 
 ```bash
-python enhanced_agent.py
+python agent.py
 ```
 
 Watch the agent complete different tasks with task-specific policies!
@@ -265,7 +265,7 @@ Get all task definitions
 ### Basic Usage
 
 ```python
-from rl_client import TeamsEnvClient
+from client import TeamsEnvClient
 
 client = TeamsEnvClient()
 
@@ -301,8 +301,8 @@ print(f"Episode finished. Total reward: {total_reward}")
 ### Using the Task Agent
 
 ```python
-from enhanced_agent import TaskAgent
-from rl_client import TeamsEnvClient
+from agent import TaskAgent
+from client import TeamsEnvClient
 
 client = TeamsEnvClient()
 agent = TaskAgent(client)
@@ -320,7 +320,7 @@ print(f"Total reward: {result['total_reward']}")
 ### Multi-Episode Training
 
 ```python
-from enhanced_agent import train_multiple_episodes
+from agent import train_multiple_episodes
 
 # Train on random tasks
 train_multiple_episodes(num_episodes=10)
@@ -386,7 +386,7 @@ Episodes end when:
 ### Example Evaluation
 
 ```python
-from rl_client import TeamsEnvClient
+from client import TeamsEnvClient
 
 client = TeamsEnvClient()
 
@@ -485,10 +485,10 @@ actionSendMessage(episode, payload) {
 
 - **Backend Code**: `backend/src/models/environment.js`
 - **API Routes**: `backend/src/routes/env.js`
-- **Python Client**: `python_agent/rl_client.py`
-- **Example Agent**: `python_agent/enhanced_agent.py`
-- **Test Script**: `python_agent/test_rl_env.py`
-- **Summary Doc**: `docs/RL_ENHANCEMENT_SUMMARY.md`
+- **Python Client**: `python_agent/client.py`
+- **Agent**: `python_agent/agent.py`
+- **Test Script**: `python_agent/test.py`
+- **Demo**: `python_agent/demo.py`
 
 ## 🐛 Troubleshooting
 
@@ -525,9 +525,9 @@ To add features or fix bugs:
 
 1. Modify `environment.js` for core logic
 2. Update `env.js` routes if adding endpoints
-3. Extend `rl_client.py` for new functionality
-4. Update this README with examples
-5. Test with `test_rl_env.py`
+3. Extend `client.py` for new functionality
+4. Update this guide with examples
+5. Test with `test.py`
 
 ## 📝 License
 

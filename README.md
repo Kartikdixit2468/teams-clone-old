@@ -77,10 +77,10 @@ cd python_agent
 pip install requests
 
 # Test the RL environment
-python test_rl_env.py
+python test.py
 
-# Run the intelligent agent
-python enhanced_agent.py
+# Run the agent
+python agent.py
 
 # Try the interactive demo
 python demo.py
@@ -88,8 +88,7 @@ python demo.py
 
 ## 📚 Documentation
 
-- **[RL System Guide](./docs/RL_SYSTEM_GUIDE.md)** - Complete guide with usage examples and tips
-- **[RL Enhancement Summary](./docs/RL_ENHANCEMENT_SUMMARY.md)** - Implementation details and metrics
+- **[RL Guide](./docs/RL_GUIDE.md)** - Complete guide with usage examples and tips
 - **[Evaluation Guide](./docs/EVALUATION.md)** - Reward design, metrics, evaluation protocol
 - **[API Reference](./docs/API.md)** - Complete API documentation
 
@@ -97,16 +96,16 @@ python demo.py
 
 ### Core Endpoints
 
-| Endpoint              | Method | Description                                |
-| --------------------- | ------ | ------------------------------------------ |
-| `/env/reset`          | POST   | Start new episode with optional task type  |
-| `/env/state`          | GET    | Get current observation                    |
-| `/env/step`           | POST   | Execute action, return state/reward/done   |
-| `/env/actions`        | GET    | List available actions with examples       |
-| `/env/stats`          | GET    | Get episode statistics                     |
-| `/env/tasks`          | GET    | Get all available task definitions         |
-| `/env/info/:episodeId`| GET    | Get detailed episode info with history     |
-| `/env/history`        | GET    | Get completed episode history              |
+| Endpoint               | Method | Description                               |
+| ---------------------- | ------ | ----------------------------------------- |
+| `/env/reset`           | POST   | Start new episode with optional task type |
+| `/env/state`           | GET    | Get current observation                   |
+| `/env/step`            | POST   | Execute action, return state/reward/done  |
+| `/env/actions`         | GET    | List available actions with examples      |
+| `/env/stats`           | GET    | Get episode statistics                    |
+| `/env/tasks`           | GET    | Get all available task definitions        |
+| `/env/info/:episodeId` | GET    | Get detailed episode info with history    |
+| `/env/history`         | GET    | Get completed episode history             |
 
 ### Task Types
 
@@ -119,8 +118,8 @@ python demo.py
 ### Example Usage
 
 ```python
-from rl_client import TeamsEnvClient
-from enhanced_agent import TaskAgent
+from client import TeamsEnvClient
+from agent import TaskAgent
 
 # Initialize client
 client = TeamsEnvClient()
@@ -139,7 +138,7 @@ while not done:
     reward = result['reward']
     done = result['done']
 
-# Option 2: Use intelligent agent
+# Option 2: Use the agent
 agent = TaskAgent(client)
 result = agent.run_episode(task_type='channel_explorer', verbose=True)
 print(f"Task completed: {result['completed']}")
@@ -157,6 +156,7 @@ print(f"Total reward: {result['total_reward']:.2f}")
 ## 🏆 Reward Structure
 
 ### Action Rewards
+
 - **Base message**: +0.1 per message
 - **Respond to @mention**: +0.5 bonus
 - **Relevant keywords**: +0.3 bonus
@@ -167,13 +167,14 @@ print(f"Total reward: {result['total_reward']:.2f}")
 - **Invalid action**: -0.2 to -0.3 penalty
 
 ### Task Completion Bonuses
+
 - **Greeting Response**: +2.0
 - **Active Participant**: +2.5
 - **Meeting Joiner**: +3.0 (highest value)
 - **Social Butterfly**: +2.0
 - **Channel Explorer**: +1.5
 
-See [RL_SYSTEM_GUIDE.md](./docs/RL_SYSTEM_GUIDE.md) for detailed reward design and strategies.
+See [RL_GUIDE.md](./docs/RL_GUIDE.md) for detailed reward design and strategies.
 
 ## 🛠️ Tech Stack
 
@@ -202,17 +203,16 @@ teams-clone/
 │   └── package.json
 │
 ├── python_agent/            # Python RL agents
-│   ├── rl_client.py         # Environment client
-│   ├── enhanced_agent.py    # Intelligent task-based agent
-│   ├── test_rl_env.py       # Comprehensive test suite
-│   ├── demo.py              # Interactive demo script
+│   ├── client.py            # Environment client
+│   ├── agent.py             # Task-based agent
+│   ├── test.py              # Test suite
+│   ├── demo.py              # Interactive demo
 │   └── requirements.txt
 │
-└── docs/                         # Documentation
-    ├── RL_SYSTEM_GUIDE.md        # Complete RL guide
-    ├── RL_ENHANCEMENT_SUMMARY.md # Implementation details
-    ├── EVALUATION.md             # Evaluation metrics
-    └── API.md                    # API reference
+└── docs/                    # Documentation
+    ├── RL_GUIDE.md          # RL guide
+    ├── EVALUATION.md        # Evaluation metrics
+    └── API.md               # API reference
 ```
 
 ## 🤝 Contributing
@@ -260,12 +260,14 @@ If you use TeamsClone-RL in your research, please cite:
 ## 🎯 Key Metrics & Performance
 
 **Current Baseline Agent Performance:**
+
 - **Success Rate**: 100% across all tasks
 - **Average Reward**: 2.37 (mixed tasks)
 - **Average Steps**: 4.7 steps to completion
 - **Efficiency**: Greeting Response completed in 1 step!
 
 **Environment Statistics:**
+
 - **Total Code**: 720 lines (environment.js) + 350 lines (enhanced_agent.py)
 - **API Endpoints**: 9 comprehensive endpoints
 - **Task Types**: 5 diverse objectives

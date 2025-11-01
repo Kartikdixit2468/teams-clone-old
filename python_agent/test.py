@@ -1,5 +1,5 @@
 """
-Quick Test of Enhanced RL Environment
+RL Environment Test Suite
 
 Run this to verify the RL environment is working properly.
 """
@@ -10,7 +10,7 @@ import time
 
 
 def test_rl_environment():
-    """Test the enhanced RL environment"""
+    """Test the RL environment"""
     base_url = 'http://localhost:3001/env'
 
     print("="*60)

@@ -1,33 +1,29 @@
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+// src/models/database.js
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
+import path from "path";
 
-// Load environment variables from .env file
-dotenv.config();
+// Open a connection to the same DB file we created in initDB.js
+const dbPath = path.resolve("./data/teams_clone.db");
 
-// Create a connection pool
-// A pool is better than a single connection for handling multiple concurrent requests
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'DontTellYou5!',
-  database: process.env.DB_NAME || 'teams_clone',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+// Open the database connection using async/await
+const dbPromise = open({
+  filename: dbPath,
+  driver: sqlite3.Database,
 });
 
-// Test the connection (optional, but good for debugging)
+// Test connection (optional)
 async function testConnection() {
   try {
-    const connection = await pool.getConnection();
-    console.log('Successfully connected to MySQL database.');
-    connection.release();
+    const db = await dbPromise;
+    await db.get("SELECT 1");
+    console.log("✅ Connected to SQLite database.");
   } catch (err) {
-    console.error('Error connecting to MySQL:', err.stack);
+    console.error("❌ Error connecting to SQLite:", err);
   }
 }
 
 testConnection();
 
-// Export the pool so you can use it in your other files (like auth.routes.js)
-export default pool;
+// Export the database connection for use in other files
+export default dbPromise;

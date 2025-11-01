@@ -3,14 +3,14 @@ import { body, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import pool from "../models/database.js"; // Import the MySQL pool
+import dbPromise from "../models/database.js"; // ✅ renamed for clarity
 
-// Load environment variables (for JWT_SECRET)
 dotenv.config();
 
 const router = express.Router();
 
 const JWT_SECRET =
+  process.env.JWT_SECRET ||
   "a7020ef410d0d6eb1a3dbd840240aef5d325e877b2f8ffb183e2f7a1944990df94dda60a77351f7c05b71e11384ae0e4773d237517486467ad889cb8d7fc2f11";
 
 /**
@@ -21,8 +21,6 @@ const JWT_SECRET =
 router.post(
   "/register",
   [
-    // Validation middleware
-    // body("name", "Name is required").not().isEmpty(),
     body("email", "Please include a valid email").isEmail(),
     body("password", "Password must be 6 or more characters").isLength({
       min: 6,
@@ -30,12 +28,12 @@ router.post(
   ],
   async (req, res) => {
     console.log("SIGN UP REQ");
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Destructure request body
     const {
       name,
       email,
@@ -48,73 +46,58 @@ router.post(
       read_receipt,
     } = req.body;
 
-    let connection;
     try {
-      // Get a connection from the pool
-      connection = await pool.getConnection();
+      const db = await dbPromise;
 
-      // 1. Check if user already exists
-      const [existingUsers] = await connection.query(
-        "SELECT * FROM `user` WHERE `email` = ?",
-        [email]
-      );
+      // 1️⃣ Check if user already exists
+      const existingUser = await db.get("SELECT * FROM user WHERE email = ?", [
+        email,
+      ]);
 
-      if (existingUsers.length > 0) {
+      if (existingUser) {
         return res
           .status(400)
           .json({ msg: "User already exists with this email" });
       }
 
-      // 2. Hash the password
+      // 2️⃣ Hash password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      // 3. Insert new user into the database
-      // We'll only insert the fields provided, letting others use defaults from the schema
-      const newUser = {
-        name,
-        email,
-        password: hashedPassword,
-        nickname: nickname || null,
-        phone: phone || null,
-        theme: theme || "default",
-        whoCanAddToGroup: whoCanAddToGroup || "everyone",
-        whoCanCall: whoCanCall || "everyone",
-        read_receipt: read_receipt !== undefined ? read_receipt : true,
-      };
-
-      const [result] = await connection.query(
-        "INSERT INTO `user` SET ?",
-        newUser
+      // 3️⃣ Insert new user
+      const result = await db.run(
+        `INSERT INTO user 
+          (name, email, password, nickname, phone, theme, whoCanAddToGroup, whoCanCall, read_receipt) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          name || null,
+          email,
+          hashedPassword,
+          nickname || null,
+          phone || null,
+          theme || "default",
+          whoCanAddToGroup || "everyone",
+          whoCanCall || "everyone",
+          read_receipt !== undefined ? read_receipt : 1,
+        ]
       );
 
-      const insertedUserId = result.insertId;
+      // 4️⃣ Get the inserted user’s ID
+      const userId = result.lastID;
 
-      // 4. Create and return JWT
+      // 5️⃣ Create JWT
       const payload = {
         user: {
-          id: insertedUserId,
-          email: email,
+          id: userId,
+          email,
         },
       };
 
-      jwt.sign(
-        payload,
-        JWT_SECRET,
-        { expiresIn: "5h" }, // Token expires in 5 hours (good for a hackathon)
-        (err, token) => {
-          if (err) throw err;
-          res.json({ token, msg: "User registered successfully" });
-        }
-      );
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "5h" });
+      res.json({ token, msg: "User registered successfully" });
     } catch (err) {
       console.error("Error in /register route:", err.message);
       res.status(500).send("Server error");
-    } finally {
-      // 5. Release the connection back to the pool
-      if (connection) {
-        connection.release();
-      }
     }
   }
 );
@@ -127,12 +110,12 @@ router.post(
 router.post(
   "/login",
   [
-    // Validation middleware
     body("email", "Please include a valid email").isEmail(),
     body("password", "Password is required").exists(),
   ],
   async (req, res) => {
     console.log("SIGN IN REQ");
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -140,31 +123,23 @@ router.post(
 
     const { email, password } = req.body;
 
-    let connection;
     try {
-      // Get a connection from the pool
-      connection = await pool.getConnection();
+      const db = await dbPromise;
 
-      // 1. Check if user exists
-      const [users] = await connection.query(
-        "SELECT * FROM `user` WHERE `email` = ?",
-        [email]
-      );
+      // 1️⃣ Check if user exists
+      const user = await db.get("SELECT * FROM user WHERE email = ?", [email]);
 
-      if (users.length === 0) {
+      if (!user) {
         return res.status(400).json({ msg: "Invalid credentials" });
       }
 
-      const user = users[0];
-
-      // 2. Compare passwords
+      // 2️⃣ Compare passwords
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (!isMatch) {
         return res.status(400).json({ msg: "Invalid credentials" });
       }
 
-      // 3. Create and return JWT
+      // 3️⃣ Create JWT
       const payload = {
         user: {
           id: user.id,
@@ -172,20 +147,15 @@ router.post(
         },
       };
 
-      jwt.sign(payload, JWT_SECRET, { expiresIn: "5h" }, (err, token) => {
-        if (err) throw err;
-        res.json({ token, msg: "Login successful" });
-      });
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "5h" });
+      res.json({ token, msg: "Login successful" });
     } catch (err) {
       console.error("Error in /login route:", err.message);
       res.status(500).send("Server error");
-    } finally {
-      // 4. Release the connection back to the pool
-      if (connection) {
-        connection.release();
-      }
     }
   }
 );
 
 export default router;
+
+

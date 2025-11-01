@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import HomePage from './components/HomePage';
+// import LoginPage from './components/LoginPage';
 import AuthFlow from './components/AuthFlow';
+import Dashboard from './components/Dashboard';
+import NotFound from './components/NotFound';
 
 function App() {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleAuthSuccess = (newToken) => {
     setToken(newToken);
     setIsAuthenticated(true);
-    // You would likely redirect to the main app here
+    localStorage.setItem('token', newToken);
     console.log("Authentication successful! Token:", newToken);
+    navigate('/dashboard');
   };
 
   const handleLogout = () => {
@@ -21,26 +29,39 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {isAuthenticated ? (
-        <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Teams!</h1>
-          <p className="text-lg mb-6">You are now logged in.</p>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
-          >
-            Logout
-          </button>
-        </div>
-      ) : (
+    // <Router>
+      <div className="App">
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<HomePage />} />
+          
+          <Route
+            path="/login"
+            element={<AuthFlow onAuthSuccess={handleAuthSuccess} />}
+          />
+          
+          <Route
+            path="/register"
+            element={<AuthFlow onAuthSuccess={handleAuthSuccess} />}
+          />
 
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              isAuthenticated ? (
+                <Dashboard onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
 
-        <AuthFlow onAuthSuccess={handleAuthSuccess} />
-
-        // <MicrosoftLoginClone/>
-      )}
-    </div>
+          {/* 404 fallback */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    // </Router>
   );
 }
 

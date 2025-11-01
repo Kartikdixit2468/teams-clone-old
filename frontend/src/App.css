@@ -1,0 +1,53 @@
+/* Main app styles */
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.teams-layout {
+  display: grid;
+  grid-template-columns: 68px 280px 1fr;
+  height: calc(100vh - 48px);
+  overflow: hidden;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-enter {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Status indicators */
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-available {
+  background-color: #92C353;
+}
+
+.status-busy {
+  background-color: #C4314B;
+}
+
+.status-away {
+  background-color: #F8D22A;
+}
+
+.status-offline {
+  background-color: #8A8886;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "teamsclone-rl-backend",
+  "version": "1.0.0",
+  "description": "Backend server for TeamsClone-RL - RL Environment API + Real-time Chat",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["reinforcement-learning", "teams-clone", "socket.io", "rl-environment"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.8.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
